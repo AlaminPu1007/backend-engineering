@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
+import { UpdateUserDto } from './dto/update-user.dto.js';
 
 const userData = [
     {
@@ -62,8 +63,6 @@ export class UserController {
         // destruct data from body
         const { name = "", email = "" } = CreateUserDtoData || {}
 
-        // console.log(CreateUserDtoData, 'CreateUserDtoData')
-
         // check unique users by their email
         const user = userData.find(i => i.email === email)
 
@@ -88,6 +87,44 @@ export class UserController {
             statusCode: 201,
             data: CreateUserDtoData,
             message: "User create successfully!"
+        }
+    }
+
+    // update users
+    @Put(":id")
+    updateUser(@Param('id') id: number | string, @Body() UpdateUserDtoData: UpdateUserDto) {
+
+        // destruct data from body
+        const { name = "", email = "" } = UpdateUserDtoData || {}
+
+        // check unique users by their email
+        const user = userData.find(i => Number(i.id) === Number(id))
+        // console.log(id, 'id')
+
+        // console.log("user", user);
+        // console.log("UpdateUserDtoData", UpdateUserDtoData);
+
+        if (!user) {
+            return {
+                status: false,
+                statusCode: 404,
+                data: null,
+                message: "This user is not exist."
+            }
+        }
+
+        userData.forEach((i) => {
+            if (Number(i.id) === Number(id)) {
+                i.name = name;
+                i.email = email || i.email
+            }
+        })
+
+        return {
+            status: true,
+            statusCode: 201,
+            data: userData,
+            message: "User updated successfully!"
         }
     }
 }
