@@ -1,117 +1,120 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 
 @Injectable()
 export class UserService {
+  private userData = [
+    {
+      id: 1,
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      email: 'jane@example.com',
+    },
+  ];
 
-    private userData = [
-        {
-            id: 1,
-            name: 'John Doe',
-            email: 'john.doe@example.com'
-        },
-        {
-            id: 2,
-            name: 'Jane Smith',
-            email: 'jane@example.com'
-        }
-    ]
-
-    findUserByQuery(name: string) {
-        if (name) {
-            const user = this.userData.find(user => user.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()));
-            if (user) {
-                return user;
-            } else {
-                return { message: 'User not found' };
-            }
-        }
-
-        return { message: 'Please provide a name query parameter' };
+  findUserByQuery(name: string) {
+    if (name) {
+      const user = this.userData.find((user) =>
+        user.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()),
+      );
+      if (user) {
+        return user;
+      } else {
+        return { message: 'User not found' };
+      }
     }
 
-    // Get users by params using id
-    getUserByParams(id: number | string) {
+    return { message: 'Please provide a name query parameter' };
+  }
 
-        if (!id.toString().match(/^\d+$/)) {
-            return { message: 'Please provide a valid id' };
-        }
-
-        const user = this.userData.find(i => Number(i.id) === Number(id));
-
-        if (user) {
-            return user;
-        } else {
-            return { message: 'User not found' };
-        }
+  // Get users by params using id
+  getUserByParams(id: number | string) {
+    if (!id.toString().match(/^\d+$/)) {
+      return { message: 'Please provide a valid id' };
     }
 
-    // create users
-    createNewUser(CreateUserDtoData: CreateUserDto) {
-        // destruct data from body
-        const { name = "", email = "" } = CreateUserDtoData || {}
+    const user = this.userData.find((i) => Number(i.id) === Number(id));
 
-        // check unique users by their email
-        const user = this.userData.find(i => i.email === email)
+    if (user) {
+      return user;
+    } else {
+      return { message: 'User not found' };
+    }
+  }
 
-        if (user) {
-            return {
-                status: false,
-                statusCode: 409,
-                data: null,
-                message: "This user is already exist."
-            }
-        }
+  // create users
+  createNewUser(CreateUserDtoData: CreateUserDto) {
+    // destruct data from body
+    const { name = '', email = '' } = CreateUserDtoData || {};
 
-        // update user-data
-        this.userData.push({
-            id: this.userData.length + 1,
-            name,
-            email
-        })
+    // check unique users by their email
+    const user = this.userData.find((i) => i.email === email);
 
-        return {
-            status: true,
-            statusCode: 201,
-            data: CreateUserDtoData,
-            message: "User create successfully!"
-        }
+    if (user) {
+      return {
+        status: false,
+        statusCode: 409,
+        data: null,
+        message: 'This user is already exist.',
+      };
     }
 
-    // update users
-    updateUser(id: number | string, UpdateUserDtoData: UpdateUserDto) {
+    // update user-data
+    this.userData.push({
+      id: this.userData.length + 1,
+      name,
+      email,
+    });
 
-        // destruct data from body
-        const { name = "", email = "" } = UpdateUserDtoData || {}
+    return {
+      status: true,
+      statusCode: 201,
+      data: CreateUserDtoData,
+      message: 'User create successfully!',
+    };
+  }
 
-        // check unique users by their email
-        const user = this.userData.find(i => Number(i.id) === Number(id))
-        // console.log(id, 'id')
+  // update users
+  updateUser(id: number | string, UpdateUserDtoData: UpdateUserDto) {
+    // destruct data from body
+    const { name = '', email = '' } = UpdateUserDtoData || {};
 
-        // console.log("user", user);
-        // console.log("UpdateUserDtoData", UpdateUserDtoData);
+    // check unique users by their email
+    const user = this.userData.find((i) => Number(i.id) === Number(id));
+    // console.log(id, 'id')
 
-        if (!user) {
-            // return {
-            //     status: false,
-            //     statusCode: 404,
-            //     data: null,
-            //     message: "This user is not exist."
-            // }
+    // console.log("user", user);
+    // console.log("UpdateUserDtoData", UpdateUserDtoData);
 
-            throw new NotFoundException(`User with id ${id} not found`);
-            // throw new HttpException(`User with id ${id} not found`, HttpStatus.NOT_FOUND);
+    if (!user) {
+      // return {
+      //     status: false,
+      //     statusCode: 404,
+      //     data: null,
+      //     message: "This user is not exist."
+      // }
 
-        }
-
-        this.userData.forEach((i) => {
-            if (Number(i.id) === Number(id)) {
-                i.name = name;
-                i.email = email || i.email
-            }
-        })
-
-        return this.userData;
+      throw new NotFoundException(`User with id ${id} not found`);
+      // throw new HttpException(`User with id ${id} not found`, HttpStatus.NOT_FOUND);
     }
+
+    this.userData.forEach((i) => {
+      if (Number(i.id) === Number(id)) {
+        i.name = name;
+        i.email = email || i.email;
+      }
+    });
+
+    return this.userData;
+  }
 }

@@ -31,6 +31,14 @@
 $ npm install
 ```
 
+## Code formatting
+
+Prettier formats all tracked TypeScript files in `src/` and `test/` before each commit. Any formatting changes are staged automatically. To format all source and test files manually, run:
+
+```bash
+$ npm run format
+```
+
 ## Compile and run the project
 
 ```bash

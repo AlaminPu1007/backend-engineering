@@ -7,14 +7,18 @@
   To install the required dependencies for this interceptor, you can run the following command in your terminal:
   nest g interceptor utils/transform --flat
 */
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { map, Observable } from 'rxjs';
 
 @Injectable()
 export class TransformInterceptor<T> implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-
     const res = context.switchToHttp().getResponse<Response>();
     const statusCode = res.statusCode ?? 200;
 
