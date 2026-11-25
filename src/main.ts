@@ -8,8 +8,16 @@ async function bootstrap() {
     instrument: ObserveInstrument,
   });
 
+  // Functional middleware will be defined here
+
   // apply the validation pipe globally to validate incoming requests based on the DTOs defined in the application
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   // apply our own custom interceptor globally to transform the response data before sending it back to the client
   app.useGlobalInterceptors(new TransformInterceptor());
