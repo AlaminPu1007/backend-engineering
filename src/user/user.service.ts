@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 
@@ -61,12 +56,7 @@ export class UserService {
     const user = this.userData.find((i) => i.email === email);
 
     if (user) {
-      return {
-        status: false,
-        statusCode: 409,
-        data: null,
-        message: 'This user is already exist.',
-      };
+      throw new NotFoundException(`User with email ${email} already exists`);
     }
 
     // update user-data
@@ -76,12 +66,7 @@ export class UserService {
       email,
     });
 
-    return {
-      status: true,
-      statusCode: 201,
-      data: CreateUserDtoData,
-      message: 'User create successfully!',
-    };
+    return CreateUserDtoData;
   }
 
   // update users
