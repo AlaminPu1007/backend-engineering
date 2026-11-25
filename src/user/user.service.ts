@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 
@@ -93,12 +93,16 @@ export class UserService {
         // console.log("UpdateUserDtoData", UpdateUserDtoData);
 
         if (!user) {
-            return {
-                status: false,
-                statusCode: 404,
-                data: null,
-                message: "This user is not exist."
-            }
+            // return {
+            //     status: false,
+            //     statusCode: 404,
+            //     data: null,
+            //     message: "This user is not exist."
+            // }
+
+            throw new NotFoundException(`User with id ${id} not found`);
+            // throw new HttpException(`User with id ${id} not found`, HttpStatus.NOT_FOUND);
+
         }
 
         this.userData.forEach((i) => {
@@ -108,11 +112,6 @@ export class UserService {
             }
         })
 
-        return {
-            status: true,
-            statusCode: 201,
-            data: this.userData,
-            message: "User updated successfully!"
-        }
+        return this.userData;
     }
 }
