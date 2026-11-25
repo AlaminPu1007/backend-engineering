@@ -26,6 +26,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
 export class AppModule implements NestModule {
   // class based middleware will be defined here, (due to dependency injection, class based middleware defined here)
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(ApiKeyMiddleware).forRoutes(UserController);
+    // to allow guards, we need to hide this for now, cause guards are run after middleware,
+    // consumer.apply(ApiKeyMiddleware).forRoutes(UserController);
   }
 }

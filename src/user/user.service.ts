@@ -102,4 +102,18 @@ export class UserService {
 
     return this.userData;
   }
+
+  deleteUser(id: number | string) {
+    const userIndex = this.userData.findIndex(
+      (i) => Number(i.id) === Number(id),
+    );
+
+    if (userIndex === -1) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    this.userData.splice(userIndex, 1);
+
+    return { message: `User with id ${id} has been deleted` };
+  }
 }
