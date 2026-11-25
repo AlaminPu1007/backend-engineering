@@ -3,8 +3,6 @@ import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { UserModule } from './user/user.module.js';
-import { ApiKeyMiddleware } from './middleware/api-key.middleware.js';
-import { UserController } from './user/user.controller.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
